@@ -1,4 +1,4 @@
-
+from prueba.funciones import f,g
 
 def PlayTimeGenre(genero: str):
   "Año con más horas jugadas para dicho género."
