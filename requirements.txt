@@ -1,6 +1,5 @@
 pandas
 fastapi
 uvicorn
-gzip
-fastparquet
-pyarrow
+
+
