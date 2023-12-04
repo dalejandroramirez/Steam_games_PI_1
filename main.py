@@ -41,28 +41,28 @@ def play_time_genres(genero: str):
 #   pass
 
 
-# @app.get('/endpoint2/{genre}')
-# def user_for_genre(genre: str):
-#     path_endpoint_2 = path.join('data','clear','02_user_for_genre_data.csv.gz')
-#     table_2 = pd.read_csv(path_endpoint_2)
+@app.get('/endpoint2/{genre}')
+def user_for_genre(genre: str):
+    path_endpoint_2 = path.join('data','clear','02_user_for_genre_data.csv.gz')
+    table_2 = pd.read_csv(path_endpoint_2)
 
-#     # Filtro la tabla para quedarme únicamente con registros que contengan el género deseado
-#     genre_filter = table_2[table_2['genres'].str.contains(genre)]
+    # Filtro la tabla para quedarme únicamente con registros que contengan el género deseado
+    genre_filter = table_2[table_2['genres'].str.contains(genre)]
 
-#     # Usuarios con la suma de su tiempo de juego 
-#     df_sum_play_time = genre_filter.groupby(['user_id'])['playtime_forever'].sum()
+    # Usuarios con la suma de su tiempo de juego 
+    df_sum_play_time = genre_filter.groupby(['user_id'])['playtime_forever'].sum()
 
-#     # Usuario con más horas jugadas en total
-#     if not df_sum_play_time.empty:
-#         user_max_time = df_sum_play_time.idxmax()
-#     else:
-#         return {'message': 'No existe usuario que haya jugado este juego'}
+    # Usuario con más horas jugadas en total
+    if not df_sum_play_time.empty:
+        user_max_time = df_sum_play_time.idxmax()
+    else:
+        return {'message': 'No existe usuario que haya jugado este juego'}
 
-#     # Filtrar solo por los registros del usuario con mayor tiempo de juego
-#     user_filter = genre_filter[genre_filter['user_id'] == user_max_time][['release_year', 'playtime_forever']]
+    # Filtrar solo por los registros del usuario con mayor tiempo de juego
+    user_filter = genre_filter[genre_filter['user_id'] == user_max_time][['release_year', 'playtime_forever']]
 
-#     # Sumamos las horas jugadas del usuario por año
-#     user_filter_sum = user_filter.groupby('release_year').sum().reset_index()
+    # Sumamos las horas jugadas del usuario por año
+    user_filter_sum = user_filter.groupby('release_year').sum().reset_index()
 
-#     target = user_filter_sum.rename(columns={'release_year': 'year', 'playtime_forever': 'total_horas'}).to_dict(orient='records')
-#     return {f"Usuario con más horas jugadas para Género {genre}": user_max_time, "Horas jugadas": target}
+    target = user_filter_sum.rename(columns={'release_year': 'year', 'playtime_forever': 'total_horas'}).to_dict(orient='records')
+    return {f"Usuario con más horas jugadas para Género {genre}": user_max_time, "Horas jugadas": target}
