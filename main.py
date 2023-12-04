@@ -23,25 +23,13 @@ def play_time_genres(genero: str):
   
 
 
-# def UserForGenre( genero : str ):
-#   """"
-#   el usuario que acumula más horas jugadas para el género dado y una lista de la acumulación de horas jugadas por año.
-#   """
-
-
-# def UsersNotRecommend( año : int ): 
-#   """Devuelve el top 3 de juegos MENOS recomendados por usuarios para el año dado. (reviews.recommend = False y comentarios negativos)
-#   Ejemplo de retorno: [{"Puesto 1" : X}, {"Puesto 2" : Y},{"Puesto 3" : Z}]
-#   """
-#   pass
-
 # def sentiment_analysis( año : int ): 
 #   """Según el año de lanzamiento, se devuelve una lista con la cantidad de registros de reseñas de usuarios que se encuentren categorizados con un análisis de sentimiento.
 #   """
 #   pass
 
 
-@app.get('/endpoint2/{genre}')
+@app.get('/user_for_genre/{genre}')
 def user_for_genre(genre: str):
     path_endpoint_2 = path.join('data','clear','02_user_for_genre_data.csv.gz')
     table_2 = pd.read_csv(path_endpoint_2)
@@ -66,3 +54,29 @@ def user_for_genre(genre: str):
 
     target = user_filter_sum.rename(columns={'release_year': 'year', 'playtime_forever': 'total_horas'}).to_dict(orient='records')
     return {f"Usuario con más horas jugadas para Género {genre}": user_max_time, "Horas jugadas": target}
+
+@app.get('/user_reviews_recommend/{year}')
+def user_reviews_recommend(year: int):
+  path_endpoint_3 = path.join('data','clear','03_users_recommend.csv.gz')
+  table_3 = pd.read_csv(path_endpoint_3)
+  
+  top_3 = table_3[['app_name','recommend']][table_3['year_posted']==year].groupby('app_name').sum().nlargest(3,'recommend').reset_index()
+  
+  diccionario_resultado = {f'Puesto{i+1}': juego for i, juego in enumerate(top_3['app_name'])}
+  
+  return [diccionario_resultado]
+
+
+@app.get('/user_not_reviews_recommend/{year}')
+def user_reviews_not_recommend(year: int):
+  path_endpoint_4 = path.join('data','clear','04_users_recommend_not_recommend.csv.gz')
+  table_4 = pd.read_csv(path_endpoint_4)
+  
+  top_3 = table_4[['app_name','recommend']][table_4['year_posted']==year].groupby('app_name').sum().nlargest(3,'recommend').reset_index()
+  
+  diccionario_resultado = {f'Puesto{i+1}': juego for i, juego in enumerate(top_3['app_name'])}
+  
+  if len(diccionario_resultado) == 0:
+    return('Este año nadie recomendó')
+  
+  return [diccionario_resultado]
