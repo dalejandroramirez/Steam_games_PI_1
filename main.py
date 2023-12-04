@@ -80,3 +80,24 @@ def user_reviews_not_recommend(year: int):
     return('Este año nadie recomendó')
   
   return [diccionario_resultado]
+
+@app.get('/sentiment_analysis/{year}')
+def sentiment_analysis(year: int):
+  path_endpoint_5 = path.join('data','clear','05_sentyment_analysis.csv.gz')
+  table_3 = pd.read_csv(path_endpoint_5)
+  
+  table_3 = table_3[table_3['release_year'] == year]
+  
+  return({f"Negative = {table_3.iloc[0,1]}, Neutral = {table_3.iloc[0,2]}, Positive= {table_3.iloc[0,3]}"})  
+
+
+def recomendacion_juego (): 
+  """Ingresando el id de producto, deberíamos recibir una lista con 5 juegos recomendados similares al ingresado.
+Si es un sistema de recomendación user-item:"""
+  pass
+
+
+
+def recomendacion_usuario(): 
+  """Ingresando el id de un usuario, deberíamos recibir una lista con 5 juegos recomendados para dicho usuario."""
+  pass
