@@ -36,6 +36,7 @@ def user_for_genre(genre :str):
   user_filter_sum = user_filter.groupby('release_year').sum().reset_index()
   
   target = user_filter_sum.rename(columns={'release_year':'year'})[['year', 'playtime_forever']].to_dict(orient='records')
+  
   return {f"Usuario con más horas jugadas para Género {genre}" : user_max_time, "Horas jugadas": target}
 
 
