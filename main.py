@@ -44,7 +44,7 @@ def user_for_genre(genre: str):
     try:        
       genre = genre.capitalize()
       
-      path_endpoint_2 = path.join('data','clear','02_user_for_genre_data.csv.gz')
+      path_endpoint_2 = path.join('data','clear','02_user_for_genre_data_v2.csv.gz')
       table_2 = pd.read_csv(path_endpoint_2)
 
       # Filtro la tabla para quedarme únicamente con registros que contengan el género deseado
@@ -132,20 +132,18 @@ def sentiment_analysis(year: int):
     return(f'Upps... Ocurrio el siguiente error... {e}')
   
 
-def recomendacion_juego (): 
-  """Ingresando el id de producto, deberíamos recibir una lista con 5 juegos recomendados similares al ingresado.
-Si es un sistema de recomendación user-item:"""
-  pass
 
 
-@app.get('/prueba/{id}')
+@app.get('/recomendacion_juego/{id}')
 def endpoint6(id :int):
   path_endpoint_6 = os.path.join('data','clear','06_recomendacion_juego.csv.gz')
-  df= pd.read_csv(path_endpoint_6)
+  df= pd.read_csv(path_endpoint_6).sample(10000)
+      
   df['correlacion'] = 0
-
-  text_1 = df[df['steam_id'] == id]['features'].iloc[0]
-  
+  if id in df['steam_id']:
+    text_1 = df[df['steam_id'] == id]['features'].iloc[0]
+  else:
+    return('Ups... No tenemos este id. Intenta nuevamente.')
   nltk.download('stopwords')
   
   #Eliminaremos las stopwords
@@ -171,3 +169,45 @@ def endpoint6(id :int):
   texto=df['features'].values
   return list(texto)
   
+  
+@app.get('/recomendacion_juegov2/{item_id}')
+def recomendacion_juego_v2(item_id :int):
+  try:
+    path_endpoint_06 = os.path.join('data','clear','06_recomendacion_juego_v2.csv.gz')
+    consulta_06 = pd.read_csv(path_endpoint_06)
+    nombre_juego = consulta_06.set_index('item_id').loc[item_id].values[0].split(',')[0]
+
+    #Eliminaremos las stopwords
+    nltk.download('stopwords')
+    
+    stop_words_steams = ['aaaaaa', 'ab', 'abbey','abe', 'abramenko']
+    stop = list(stopwords.words('english'))
+    stop += stop_words_steams
+
+
+    tf = TfidfVectorizer(stop_words=stop, token_pattern=r'\b[a-zA-Z]\w+\b' )
+
+    data_vector = tf.fit_transform(consulta_06['features'])
+
+    data_vector_df = pd.DataFrame(data_vector.toarray(), index=consulta_06['item_id'], columns = tf.get_feature_names_out())
+      
+    vector_similitud_coseno = cosine_similarity(data_vector_df.values)
+
+    cos_sim_df = pd.DataFrame(vector_similitud_coseno, index=data_vector_df.index, columns=data_vector_df.index)
+
+    ##top5
+    juegos_similares = cos_sim_df.loc[item_id].nlargest(6)
+
+    top5 = juegos_similares.iloc[1:6]
+
+
+    resultado = consulta_06.set_index('item_id').loc[top5.index]['features'].apply(lambda x: x.split(',')[0]).values
+    
+    
+    return {'juego':nombre_juego,'similares':list(resultado)}
+  except Exception as e:
+    
+    return(f'Upps... Se obtuvo el siguiente error {e}')
+
+
+
