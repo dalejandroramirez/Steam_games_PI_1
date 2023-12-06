@@ -139,8 +139,7 @@ Si es un sistema de recomendación user-item:"""
 @app.get('/prueba/{id}')
 def endpoint6(id :int):
   path_endpoint_6 = os.path.join('data','clear','06_recomendacion_juego.csv.gz')
-  df= pd.read_csv(path_endpoint_6).sample(10000)
-
+  df= pd.read_csv(path_endpoint_6)
   df['correlacion'] = 0
 
   text_1 = df[df['steam_id'] == id]['features'].iloc[0]
