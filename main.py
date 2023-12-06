@@ -44,7 +44,7 @@ def user_for_genre(genre: str):
     try:        
       genre = genre.capitalize()
       
-      path_endpoint_2 = path.join('data','clear','02_user_for_genre_data_v2.csv.gz')
+      path_endpoint_2 = path.join('data','clear','02_user_for_genre_data.csv.gz')
       table_2 = pd.read_csv(path_endpoint_2)
 
       # Filtro la tabla para quedarme únicamente con registros que contengan el género deseado
