@@ -10,6 +10,8 @@ from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
 
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 
+import nltk
+
 from nltk.corpus import stopwords
 
 
