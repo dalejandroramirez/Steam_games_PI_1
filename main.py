@@ -145,7 +145,9 @@ def endpoint6(id :int):
   df['correlacion'] = 0
 
   text_1 = df[df['steam_id'] == id]['features'].iloc[0]
-
+  
+  nltk.download('stopwords')
+  
   #Eliminaremos las stopwords
   stop_words_steams = ['op','based','co','first']
   stop = list(stopwords.words('english'))
