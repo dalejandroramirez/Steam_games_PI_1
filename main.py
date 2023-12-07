@@ -1,5 +1,8 @@
 from os import path
 from fastapi import FastAPI
+from routers import play_time_genre
+from routers import user_for_genre
+
 
 import pandas as pd 
 import ast
@@ -12,48 +15,10 @@ from nltk.corpus import stopwords
 
 app = FastAPI()
 
+app.include_router(play_time_genre.router, tags=["Play Time Genres"])
 
-## Endpoint 01
-@app.get('/play_time_genres/{genero}')
-def play_time_genres(genero: str):
-  """Calcula el año con mayor tiempo jugado por el genero dado\n.
-  Returns:
-      dic: diccionario con el año con mayor tiempo jugado
-  """  
-  genero = genero.capitalize()
-  path_endpoint_1 = path.join('data','clear','01_play_time_genre_data.csv.gz')
-  try:
-    tabla1 = pd.read_csv(path_endpoint_1, compression='gzip')
-    year_max =tabla1[tabla1['genres'].str.contains(genero)][['release_year','playtime_forever']].groupby('release_year').sum().idxmax().iloc[0]
-    return {f'Año de lanzamiento con más horas jugadas para Género {genero}': str(year_max)}
-  
-  except Exception as e :
-    return {f'Upps, el genero: {genero} no se encuntra en nuestra lista...'}
- 
-#Endpoint 02
-@app.get('/user_for_genre/{genres}')
-def user_for_genre(genres: str):
-  """ Debe retornar el usuario que acumula más horas jugadas para el género dado y una lista de la acumulación de horas jugadas por año de lanzamiento del juego\n. 
-      Args:
-        genre (str): Genero del juego.
-    """
-  try:
-    
-    path_endpoint_02 = path.join('data','clear','02_user_for_genre_data.csv.gz')
-    
-    consulta_02 = pd.read_csv(path_endpoint_02,index_col=['index'])
-      
-    user_max = consulta_02.loc[genres].nombre
-    
-    dic_years = ast.literal_eval(consulta_02.loc[genres].year)
+app.include_router(user_for_genre.router, tags=["User For Genres"])
 
-    dic_years['Horas_Jugadas']  = dic_years.pop('playtime_forever')
-
-    return ({f"Usuario con más horas jugadas para Género {genres}" : user_max ,"Horas Jugadas" : dic_years['Horas_Jugadas']}) 
-
-
-  except Exception as e:
-    return(f'Upps... Ocurrio el siguiente error {e}')
   
 #Endpoint 03
 @app.get('/user_reviews_recommend/{year}')
@@ -70,10 +35,12 @@ def user_reviews_recommend(year: int):
     top_3 = table_3[['app_name','recommend']][table_3['year_posted']==year].groupby('app_name').sum().nlargest(3,'recommend').reset_index()
     
     diccionario_resultado = {f'Puesto{i+1}': juego for i, juego in enumerate(top_3['app_name'])}
-    
-    return [diccionario_resultado]
-
-  except Exception as e :
+    if len(diccionario_resultado) > 0:
+      return [diccionario_resultado]
+    else:
+      return(f'Lamento que para el año {year} no te podemos recomendar intenta entre 2010 y 2015')
+  
+  except ValueError as e :
     return(f'Upps... Ocurrio el siguiente error... {e}')
 
 #Endpoint 04
@@ -93,7 +60,7 @@ def user_reviews_not_recommend(year: int):
     diccionario_resultado = {f'Puesto{i+1}': juego for i, juego in enumerate(top_3['app_name'])}
     
     if len(diccionario_resultado) == 0:
-      return('Este año nadie recomendó')
+      return(f'Lamento que para el año {year} no te podemos recomendar intenta entre 2010 y 2015')
     
     return [diccionario_resultado]
   except Exception as e:
@@ -129,36 +96,45 @@ def recomendacion_juego(id :int):
   """
   path_endpoint_6 = path.join('data','clear','06_recomendacion_juego.csv.gz')
   df= pd.read_csv(path_endpoint_6).sample(10000)
-      
-  df['correlacion'] = 0
-  if id in df['steam_id']:
-    text_1 = df[df['steam_id'] == id]['features'].iloc[0]
-  else:
-    return('Ups... No tenemos este id. Intenta nuevamente.')
-  nltk.download('stopwords')
   
-  #Eliminaremos las stopwords
-  stop_words_steams = ['op','based','co','first']
-  stop = list(stopwords.words('english'))
-  stop += stop_words_steams
+  
+  try:
+    nombre_juego = df.set_index('steam_id').loc[id].values[0].split(',')[0]
 
-  def score_ml(text):
-    data_corpus = [text_1, text]  
-    tf = TfidfVectorizer(stop_words=stop)
-
-    tf_idf_matrix_df =tf.fit_transform(data_corpus)
+    df['correlacion'] = 0
+    if id in df['steam_id']:
+      text_1 = df[df['steam_id'] == id]['features'].iloc[0]
+    else:
+      return('Ups... No tenemos este id. Intenta nuevamente.')
+    nltk.download('stopwords')
     
-    return(linear_kernel(tf_idf_matrix_df,tf_idf_matrix_df)[0,1])
+    #Eliminaremos las stopwords
+    stop_words_steams = ['op','based','co','first']
+    stop = list(stopwords.words('english'))
+    stop += stop_words_steams
 
-  df['correlacion'] = df['features'].apply(score_ml)
+    def score_ml(text):
+      data_corpus = [text_1, text]  
+      tf = TfidfVectorizer(stop_words=stop)
+
+      tf_idf_matrix_df =tf.fit_transform(data_corpus)
+      
+      return(linear_kernel(tf_idf_matrix_df,tf_idf_matrix_df)[0,1])
+
+    df['correlacion'] = df['features'].apply(score_ml)
+    
+    df= df.sort_values('correlacion',ascending=False)[1:6]
+    
+    df['features'] = df['features'].apply(lambda x: x.split(',')[0])
+    
+    texto=df['features'].values
+    
+    return {'Juego': nombre_juego ,'Similares':list(texto)}
+    return list(texto)
   
-  df= df.sort_values('correlacion',ascending=False)[1:6]
-  
-  df['features'] = df['features'].apply(lambda x: x.split(',')[0])
-  
-  # texto = df.nlargest(5,'correlacion')[['features','correlacion']].to_dict(orient='records')  
-  texto=df['features'].values
-  return list(texto)
+  except Exception as e:
+    return(f'Upps Al parecer al parecer la muestra no tiene este juego, intenta nuevamente')
+      
   
 @app.get('/recomendacion_juego_v2/{item_id}')
 def recomendacion_juego_v2(item_id :int):
@@ -197,11 +173,10 @@ def recomendacion_juego_v2(item_id :int):
 
     top5 = juegos_similares.iloc[1:6]
 
-
     resultado = consulta_06.set_index('item_id').loc[top5.index]['features'].apply(lambda x: x.split(',')[0]).values
     
     
     return {'Juego':nombre_juego,'Similares':list(resultado)}
-  except Exception as e:
+  except KeyError as e:
     
-    return(f'Upps... Se obtuvo el siguiente error {e}')
+    return(f'Upps... al parecer este juego no  lo tenemos.')
