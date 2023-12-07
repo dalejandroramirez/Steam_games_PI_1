@@ -18,14 +18,13 @@ from fastapi.templating import Jinja2Templates
 
 
 app = FastAPI(title = 'Steam Games',
-              description = 'En los siguientes endpoits encontraras respuestas a diferentes problemas de negocio de steam',
+              description = 'En los siguientes endpoints encontraras las consultas solicitadas para este proyecto',
               version = '1')
 
-# Configura Jinja2Templates
 templates = Jinja2Templates(directory="templates")
 
 # Ruta para la portada
-@app.get("/")
+@app.get("/",tags=["Página Principal"])
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
