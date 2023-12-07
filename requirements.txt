@@ -3,6 +3,7 @@ fastapi
 uvicorn
 scikit-learn
 nltk
+Jinja2
 
 
 
