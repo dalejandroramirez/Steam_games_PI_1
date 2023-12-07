@@ -1,4 +1,10 @@
 from fastapi import APIRouter
+
+from os import path
+import ast
+
+import pandas as pd 
+
 router = APIRouter()
 
 @router.get("/user_for_genre/{user_id}")
