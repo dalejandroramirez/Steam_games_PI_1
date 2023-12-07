@@ -1,5 +1,8 @@
 from os import path
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+
+
+
 from routers import play_time_genre
 from routers import user_for_genre
 from routers import user_recommend
@@ -11,7 +14,22 @@ from routers import recomendacion_juego_v2
 import pandas as pd 
 import ast
 
-app = FastAPI()
+from fastapi.templating import Jinja2Templates
+
+
+app = FastAPI(title = 'Steam Games',
+              description = 'En los siguientes endpoits encontraras respuestas a diferentes problemas de negocio de steam',
+              version = '1')
+
+# Configura Jinja2Templates
+templates = Jinja2Templates(directory="templates")
+
+# Ruta para la portada
+@app.get("/")
+async def read_root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+
 
 app.include_router(play_time_genre.router, tags=["Play Time Genres"])
 
