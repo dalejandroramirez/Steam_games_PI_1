@@ -1,18 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi API de Juegos Steam</title>
+    <title>Portada del Proyecto</title>
     <style>
-        /* Estilos aquí... */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #495057;
+        }
+        header {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 50px 0;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        p {
+            color: #ced4da;
+            font-size: 1.2em;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+        .project-details {
+            background-color: #343a40;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+        .project-details h2 {
+            color: white;
+        }
+        .project-details p {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        a {
+            color: #28a745; /* Color del enlace */
+            text-decoration: none;
+            margin-left: 10px; /* Espacio a la izquierda del enlace */
+        }
     </style>
 </head>
-
 <body>
-    <h1>Bienvenido a Mi API de Juegos Steam</h1>
-    <p>Descubre y disfruta de la información sobre tus juegos favoritos de Steam a través de nuestra API.</p>
-</body>
+    <header>
+        <div class="container">
+            <h1>Steam Games</h1>
+            <p>Hola. Un gusto que entres a esta api.
+                Aqui encontraras consultas sobre una base de datos de videojuegos.</p>
+        </div>
+    </header>
 
+    <div class="container">
+        <div class="project-details">
+            <h2>Detalles del Proyecto</h2>
+            <p><strong>Autor:</strong> Daniel Alejandro Ramirez Gómez</p>
+            <p><strong>Fecha de Inicio:</strong> [4-diciembre-2023]</p>
+            <p><strong>Fecha de Finalización:</strong> [15-diciembre-2023]</p>
+            <p><strong>Observación:</strong> Para realizar las diferentes consulta entra a <a href = 'https://proyecto-1-2019.onrender.com//docs'><strong>Consultas.</strong></a></p>
+        </div>
+    </div>
+</body>
 </html>
