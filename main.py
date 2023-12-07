@@ -1,25 +1,22 @@
-import pandas as pd 
-from fastapi import FastAPI
 from os import path
+from fastapi import FastAPI
 
-
-import os 
-import pandas as pd
+import pandas as pd 
+import ast
 
 from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
-
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-
 import nltk
-
 from nltk.corpus import stopwords
 
 
 app = FastAPI()
 
+
+## Endpoint 01
 @app.get('/play_time_genres/{genero}')
 def play_time_genres(genero: str):
-  """Calcula el año con mayor tiempo jugado por el genero dado
+  """Calcula el año con mayor tiempo jugado por el genero dado\n.
   Returns:
       dic: diccionario con el año con mayor tiempo jugado
   """  
@@ -32,49 +29,37 @@ def play_time_genres(genero: str):
   
   except Exception as e :
     return {f'Upps, el genero: {genero} no se encuntra en nuestra lista...'}
-  
-@app.get('/user_for_genre/{genre}')
-def user_for_genre(genre: str):
-    """Debe devolver el usuario que acumula más horas jugadas para el género dado y una lista de la acumulación de horas jugadas por año.
-
+ 
+#Endpoint 02
+@app.get('/user_for_genre/{genres}')
+def user_for_genre(genres: str):
+  """ Debe retornar el usuario que acumula más horas jugadas para el género dado y una lista de la acumulación de horas jugadas por año de lanzamiento del juego\n. 
       Args:
         genre (str): Genero del juego.
     """
+  try:
     
-    try:        
-      genre = genre.capitalize()
+    path_endpoint_02 = path.join('data','clear','02_user_for_genre_data.csv.gz')
+    
+    consulta_02 = pd.read_csv(path_endpoint_02,index_col=['index'])
       
-      path_endpoint_2 = path.join('data','clear','02_user_for_genre_data.csv.gz')
-      table_2 = pd.read_csv(path_endpoint_2)
-
-      # Filtro la tabla para quedarme únicamente con registros que contengan el género deseado
-      genre_filter = table_2[table_2['genres'].str.contains(genre)]
-
-      # Usuarios con la suma de su tiempo de juego 
-      df_sum_play_time = genre_filter.groupby(['user_id'])['playtime_forever'].sum()
-
-      # Usuario con más horas jugadas en total
-      if not df_sum_play_time.empty:
-          user_max_time = df_sum_play_time.idxmax()
-      else:
-          return {'message': 'No existe usuario que haya jugado este juego'}
-
-      # Filtrar solo por los registros del usuario con mayor tiempo de juego
-      user_filter = genre_filter[genre_filter['user_id'] == user_max_time][['release_year', 'playtime_forever']]
-
-      # Sumamos las horas jugadas del usuario por año
-      user_filter_sum = user_filter.groupby('release_year').sum().reset_index()
-
-      target = user_filter_sum.rename(columns={'release_year': 'year', 'playtime_forever': 'total_horas'}).to_dict(orient='records')
-      return {f"Usuario con más horas jugadas para Género {genre}": user_max_time, "Horas jugadas": target}
+    user_max = consulta_02.loc[genres].nombre
     
-    except ValueError as e:
-      return(f'Upps... Ocurrio el siguiente error {e}')
+    dic_years = ast.literal_eval(consulta_02.loc[genres].year)
 
+    dic_years['Horas_Jugadas']  = dic_years.pop('playtime_forever')
+
+    return ({f"Usuario con más horas jugadas para Género {genres}" : user_max ,"Horas Jugadas" : dic_years['Horas_Jugadas']}) 
+
+
+  except Exception as e:
+    return(f'Upps... Ocurrio el siguiente error {e}')
+  
+#Endpoint 03
 @app.get('/user_reviews_recommend/{year}')
 def user_reviews_recommend(year: int):
-  """ Devuelve el top 3 de juegos MÁS recomendados por usuarios para el año dado. (reviews.recommend = True y comentarios positivos/neutrales)
-
+  """ Devuelve el top 3 de juegos MÁS recomendados por usuarios para el año dado.
+      (reviews.recommend = True y comentarios positivos/neutrales)\n
   Args:
       year (int): Año de lanzamiento del juego 
   """
@@ -91,13 +76,13 @@ def user_reviews_recommend(year: int):
   except Exception as e :
     return(f'Upps... Ocurrio el siguiente error... {e}')
 
+#Endpoint 04
 @app.get('/user_not_reviews_recommend/{year}')
 def user_reviews_not_recommend(year: int):
-  """Devuelve el top 3 de juegos MENOS recomendados por usuarios para el año dado. (reviews.recommend = False y comentarios negativos)
-
+  """Devuelve el top 3 de juegos MENOS recomendados por usuarios para el año dado. 
+    (reviews.recommend = False y comentarios negativos)\n
   Args:
       year (int): Año en el que se posteó el comentario.
-
   """
   try:
     path_endpoint_4 = path.join('data','clear','04_users_recommend_not_recommend.csv.gz')
@@ -114,12 +99,13 @@ def user_reviews_not_recommend(year: int):
   except Exception as e:
     return(f'Upps... Ocurrio el siguiente error... {e}')
 
+#Endpoint 05
 @app.get('/sentiment_analysis/{year}')
 def sentiment_analysis(year: int):
-  """Según el año de lanzamiento, se devuelve una lista con la cantidad de registros de reseñas de usuarios que se encuentren categorizados con un análisis de sentimiento.
+  """Según el año de lanzamiento, se devuelve una lista con la cantidad de registros de reseñas de usuarios que se encuentren categorizados con un análisis de sentimiento.\n
 
   Args:
-      year (int): Año de lanzamiento del juego.
+      (int): Año de lanzamiento del juego.
   """
   try:
     path_endpoint_5 = path.join('data','clear','05_sentyment_analysis.csv.gz')
@@ -130,13 +116,18 @@ def sentiment_analysis(year: int):
   
   except Exception as e:
     return(f'Upps... Ocurrio el siguiente error... {e}')
-  
 
-
-
+#Endpoint06
 @app.get('/recomendacion_juego/{id}')
-def endpoint6(id :int):
-  path_endpoint_6 = os.path.join('data','clear','06_recomendacion_juego.csv.gz')
+def recomendacion_juego(id :int):
+  """ Ingresando el id de producto, deberíamos recibir una lista con 5 juegos recomendados similares al ingresado.
+
+  Args:
+      id (int): Es el indicie de un juego que tuvi reviews y se encuentra en steam
+  Returns:
+      list : Retorna una lista con el top 5 de juegos mas similares por palabras. 
+  """
+  path_endpoint_6 = path.join('data','clear','06_recomendacion_juego.csv.gz')
   df= pd.read_csv(path_endpoint_6).sample(10000)
       
   df['correlacion'] = 0
@@ -169,11 +160,17 @@ def endpoint6(id :int):
   texto=df['features'].values
   return list(texto)
   
-  
-@app.get('/recomendacion_juegov2/{item_id}')
+@app.get('/recomendacion_juego_v2/{item_id}')
 def recomendacion_juego_v2(item_id :int):
+  """ Ingresando el id de producto, deberíamos recibir una lista con 5 juegos recomendados similares al ingresado.
+
+  Args:
+      id (int): Es el indicie de un juego que tuvi reviews y se encuentra en steam
+  Returns:
+      list : Retorna una lista con el top 5 de juegos mas similares por palabras. 
+  """
   try:
-    path_endpoint_06 = os.path.join('data','clear','06_recomendacion_juego_v2.csv.gz')
+    path_endpoint_06 = path.join('data','clear','06_recomendacion_juego_v2.csv.gz')
     consulta_06 = pd.read_csv(path_endpoint_06)
     nombre_juego = consulta_06.set_index('item_id').loc[item_id].values[0].split(',')[0]
 
@@ -204,10 +201,7 @@ def recomendacion_juego_v2(item_id :int):
     resultado = consulta_06.set_index('item_id').loc[top5.index]['features'].apply(lambda x: x.split(',')[0]).values
     
     
-    return {'juego':nombre_juego,'similares':list(resultado)}
+    return {'Juego':nombre_juego,'Similares':list(resultado)}
   except Exception as e:
     
     return(f'Upps... Se obtuvo el siguiente error {e}')
-
-
-
