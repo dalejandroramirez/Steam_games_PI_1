@@ -9,7 +9,7 @@ router = APIRouter()
 
 @router.get("/user_for_genre/{user_id}")
 def user_for_genre(genres: str):
-  """ Debe retornar el usuario que acumula más horas jugadas para el género dado y una lista de la acumulación de horas jugadas por año de lanzamiento del juego\n. 
+  """ Debe retornar el usuario que acumula más horas jugadas para el género dado y una lista de la acumulación de horas jugadas por año de lanzamiento del juego\n. Ingresa el texto en formato titulo, ejemplo Free to Play, Gore, Action.
       Args:
         genre (str): Genero del juego.
     """

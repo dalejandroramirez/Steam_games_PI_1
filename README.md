@@ -6,7 +6,7 @@
 Este proyecto interactua con una base de datos de la plataforma steam. Podras encontrar información sobre:
 
 - El año con mayor tiempo jugado por el genero dado.
-- Usuario con mayor tiempo de juego por año de lanzamiento de juego.
+- Usuario con mayor tiempo de juego por año de lanzamiento de juego para un género dado.
 - Recomendación de juegos.
 - Analisis de sentimientos sobre comentarios de usuarios.
 - Recomendación de juegos con un modelo entrenado.
@@ -68,7 +68,7 @@ Dentro del entorno de ejecución de fastapi encontraras los endpoints requeridos
 
 En este repositorio podras encontrar la siguiente estructura.
 - **data**: Encontraras dos carpetas, raw y clear. En la carpeta raw se encuetra la data cruda y sin tratamientos inciales, mientras que en la carpeta clear encontraras la data tratada para poder trabajar con ella de manera eficiente, ademas de tener las tablas requeridas para cada consulta.
-- **01_Transforamción**: Encontraras las transformaciones preliminares que realizamos en la base de  datos para la correcta manipulación de los archivos. Ademas una carpeta llamanda **funciones_aux**, esta carpeta fue diseñada para ser un modulo de python lo que permitirá escalabilidad del nootbook en caso de necesitar creación de nuevas consultas.
+- **01_Transformación**: Encontraras las transformaciones preliminares que realizamos en la base de  datos para la correcta manipulación de los archivos. Ademas una carpeta llamanda **funciones_aux**, esta carpeta fue diseñada para ser un modulo de python lo que permitirá escalabilidad del nootbook en caso de necesitar creación de nuevas consultas.
 
 - **02_Eda** En esta carpeta encontraras un etl simple sobre algunas métricas importante que podemos destactar en el proyecto, aclaro que por cuestiones de entrega, se realizó un etl sencillo, el objetivo en una siguiente versión es renderizar estas vizualizaciones de una mejor manera.
 
