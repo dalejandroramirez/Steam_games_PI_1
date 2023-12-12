@@ -49,7 +49,7 @@ Dentro del entorno de ejecución de fastapi encontraras los endpoints requeridos
 
 * `/recomendacion_juego`: Ingresando el id de producto, deberíamos recibir una lista con 5 juegos recomendados similares al ingresado.
 
-**NOTA**: También puedes usar las funciones accediendo al enlace https://api1-vmeg.onrender.com/docs, que corresponde a la API deployada en Render.
+**NOTA**: También puedes usar las funciones accediendo al enlace https://proyecto-1-2019.onrender.com/docs, que corresponde a la API deployada en Render.
 
 
 # Estructura del Proyecto
@@ -70,7 +70,7 @@ Daniel Alejandro Ramírez Gómez.
 - Correo electrónico: dalejandro.ramirez.dev@gmail.com
 
 # Tecnologías utilizadas
-Python | Pandas | Matplotlib | Seaborn | Scikit-Learn | nltk | FastAPI | Render |
+Python | Pandas | Matplotlib | Seaborn | Scikit-Learn | nltk | FastAPI | Render | Jinja2 
 
 ```bash
 pip install -r requirements.txt

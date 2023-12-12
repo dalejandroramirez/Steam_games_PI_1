@@ -1,6 +1,6 @@
 from os import path
 from fastapi import FastAPI, Request
-
+import nltk
 
 
 from routers import play_time_genre
@@ -16,6 +16,8 @@ import ast
 
 from fastapi.templating import Jinja2Templates
 
+nltk.download('stopwords')
+
 
 app = FastAPI(title = 'Steam Games',
               description = 'En los siguientes endpoints encontraras las consultas solicitadas para este proyecto',
@@ -27,7 +29,6 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/",tags=["Página Principal"])
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
-
 
 
 app.include_router(play_time_genre.router, tags=["Play Time Genres"])

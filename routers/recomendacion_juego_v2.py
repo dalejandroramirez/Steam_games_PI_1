@@ -26,7 +26,7 @@ def recomendacion_juego_v2(item_id :int):
     nombre_juego = consulta_06.set_index('item_id').loc[item_id].values[0].split(',')[0]
 
     #Eliminaremos las stopwords
-    nltk.download('stopwords')
+    # nltk.download('stopwords')
     
     stop_words_steams = ['aaaaaa', 'ab', 'abbey','abe', 'abramenko']
     stop = list(stopwords.words('english'))
