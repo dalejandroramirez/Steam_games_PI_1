@@ -23,10 +23,11 @@ def user_for_genre(genres: str):
     
     dic_years = ast.literal_eval(consulta_02.loc[genres].year)
 
-    dic_years['Horas_Jugadas']  = dic_years.pop('playtime_forever')
+    dic_years['Horas_Jugadas']  = dic_years.pop('playtime_forever')    
+
+    dic_years["Horas_Jugadas"] = {año: int(horas) for año, horas in dic_years["Horas_Jugadas"].items()}
 
     return ({f"Usuario con más horas jugadas para Género {genres}" : user_max ,"Horas Jugadas" : dic_years['Horas_Jugadas']}) 
 
-
   except Exception as e:
-    return {f'Upps, el genero: {genres} no se encuntra en nuestra lista...'}
+    return {f'Upps, el genero: {genres} no se encuntra en nuestra lista... {e}'}

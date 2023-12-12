@@ -2,7 +2,6 @@ from os import path
 from fastapi import FastAPI, Request
 import nltk
 
-
 from routers import play_time_genre
 from routers import user_for_genre
 from routers import user_recommend
@@ -17,6 +16,8 @@ import ast
 from fastapi.templating import Jinja2Templates
 
 nltk.download('stopwords')
+
+
 
 
 app = FastAPI(title = 'Steam Games',
