@@ -12,7 +12,7 @@ Este proyecto interactua con una base de datos de la plataforma steam. Podras en
 - Recomendación de juegos con un modelo entrenado.
 - Analisis descriptivo con información cuantitativa de los datos.
 
-**NOTA**: También puedes usar las funciones accediendo al enlace [Documentación](https://proyecto-1-2019.onrender.com/docs) que corresponde a la API deployada en Render.
+**NOTA**: También puedes usar las funciones accediendo al enlace [Render](https://proyecto-1-2019.onrender.com/docs) que corresponde a la API deployada en Render.
 
 ## Contenido
 
@@ -46,17 +46,19 @@ Este proyecto interactua con una base de datos de la plataforma steam. Podras en
 ## Uso
 Dentro del entorno de ejecución de fastapi encontraras los endpoints requeridos para este proyecto:
 
-* `/play_time_genre`: Calcula el año con mayor tiempo jugado por el genero dado.
+* [`/play_time_genre`: 
+](https://github.com/dalejandroramirez/Steam_games_PI_1/blob/master/03_Endpoints/01_play_time_genres.ipynb): 
+ Calcula el año con mayor tiempo jugado por el genero dado. 
+ 
+* [user_for_genre](https://github.com/dalejandroramirez/Steam_games_PI_1/blob/master/03_Endpoints/02_user_for_genres.ipynb): Dado un genero. Debe retornar el usuario que acumula más horas jugadas para el género dado y una lista de la acumulación de horas jugadas por año de lanzamiento del juego. 
 
-* `/user_for_genre`: Dado un genero. Debe retornar el usuario que acumula más horas jugadas para el género dado y una lista de la acumulación de horas jugadas por año de lanzamiento del juego.
+* [`/user_recommned`](https://github.com/dalejandroramirez/Steam_games_PI_1/blob/master/03_Endpoints/03_users_recommend.ipynb) : Dado un año, devuelve el top 3 de juegos MÁS recomendados por usuarios para el año dado. 
 
-* `/user_recommned`: Dado un año, devuelve el top 3 de juegos MÁS recomendados por usuarios para el año dado.
+* [`/user_not_recommend`](https://github.com/dalejandroramirez/Steam_games_PI_1/blob/master/03_Endpoints/04_users_not_recommend.ipynb) : Dado un año, devuelve el top 3 de juegos MENOS recomendados por usuarios para el año dado. 
 
-* `/user_not_recommend`: Dado un año, devuelve el top 3 de juegos MENOS recomendados por usuarios para el año dado.
+* [`/sentiment_Analysis`](https://github.com/dalejandroramirez/Steam_games_PI_1/blob/master/03_Endpoints/05_sentiment_analysis.ipynb): Dado un año de lanzamiento, devuelve una lista con la cantidad de registros de reseñas de usuarios que se encuentren categorizados con un análisis de sentimiento. 
 
-* `/sentiment_Analysis`: Dado un año de lanzamiento, devuelve una lista con la cantidad de registros de reseñas de usuarios que se encuentren categorizados con un análisis de sentimiento.
-
-* `/recomendacion_juego`: Ingresando el id de producto, deberíamos recibir una lista con 5 juegos recomendados similares al ingresado.
+* [`/recomendacion_juego`](https://github.com/dalejandroramirez/Steam_games_PI_1/blob/master/03_Endpoints/05_sentiment_analysis.ipynb) : Ingresando el id de producto, deberíamos recibir una lista con 5 juegos recomendados similares al ingresado. 
 
 **NOTAS**:
 
@@ -67,17 +69,19 @@ Dentro del entorno de ejecución de fastapi encontraras los endpoints requeridos
 ## Estructura del Proyecto
 
 En este repositorio podras encontrar la siguiente estructura.
-- **data**: Encontraras dos carpetas, raw y clear. En la carpeta raw se encuetra la data cruda y sin tratamientos inciales, mientras que en la carpeta clear encontraras la data tratada para poder trabajar con ella de manera eficiente, ademas de tener las tablas requeridas para cada consulta.
-- **01_Transformación**: Encontraras las transformaciones preliminares que realizamos en la base de  datos para la correcta manipulación de los archivos. Ademas una carpeta llamanda **funciones_aux**, esta carpeta fue diseñada para ser un modulo de python lo que permitirá escalabilidad del nootbook en caso de necesitar creación de nuevas consultas.
+- [data](https://github.com/dalejandroramirez/Steam_games_PI_1/tree/master/data): Encontraras dos carpetas, raw y clear. En la carpeta raw se encuetra la data cruda y sin tratamientos inciales, mientras que en la carpeta clear encontraras la data tratada para poder trabajar con ella de manera eficiente, ademas de tener las tablas requeridas para cada consulta.
+- [01_Transformacion](https://github.com/dalejandroramirez/Steam_games_PI_1/tree/master/01_Transformacion): Encontraras las transformaciones preliminares que realizamos en la base de  datos para la correcta manipulación de los archivos. Ademas una carpeta llamanda **funciones_aux**, esta carpeta fue diseñada para ser un modulo de python lo que permitirá escalabilidad del nootbook en caso de necesitar creación de nuevas consultas.
 
-- **02_Eda** En esta carpeta encontraras un etl simple sobre algunas métricas importante que podemos destactar en el proyecto, aclaro que por cuestiones de entrega, se realizó un etl sencillo, el objetivo en una siguiente versión es renderizar estas vizualizaciones de una mejor manera.
+- [02_Eda](https://github.com/dalejandroramirez/Steam_games_PI_1/tree/master/02_Eda)En esta carpeta encontraras un etl simple sobre algunas métricas importante que podemos destactar en el proyecto, aclaro que por cuestiones de entrega, se realizó un etl sencillo, el objetivo en una siguiente versión es renderizar estas vizualizaciones de una mejor manera.
 
-- **03_Endpoints** : En esta carpeta encontraras cada una de las funciones que se realizaron en este proyecto, en diferentes nootbook, ademas de la creación de la tabla consulta,  se realiza una explicación detallada del analisis de cada función asi como un ejemplo ilustrativo de la respuesta de cada endpoint.
-- **routers** En esta carpeta encontraras las funciones ya listas para ser consumidas por la api.
-- **main.py**  Este es el archivo principal en el que se encuentra condensado toda la lógica que sera consumida por la API.
+- [03_Endpoints](https://github.com/dalejandroramirez/Steam_games_PI_1/tree/master/03_Endpoints) : En esta carpeta encontraras cada una de las funciones que se realizaron en este proyecto, en diferentes nootbook, ademas de la creación de la tabla consulta,  se realiza una explicación detallada del analisis de cada función asi como un ejemplo ilustrativo de la respuesta de cada endpoint.
+- [routers](https://github.com/dalejandroramirez/Steam_games_PI_1/tree/master/routers) En esta carpeta encontraras las funciones ya listas para ser consumidas por la api.
+- [main.py](https://github.com/dalejandroramirez/Steam_games_PI_1/blob/master/main.py)  Este es el archivo principal en el que se encuentra condensado toda la lógica que sera consumida por la API.
 
 
 # Video
+[![Watch the video](images/video_1.png)](https://youtu.be/ipZ4_8Ml778)
+
 
 # Contacto
 Daniel Alejandro Ramírez Gómez.
