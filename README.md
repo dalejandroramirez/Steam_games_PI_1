@@ -80,7 +80,7 @@ En este repositorio podras encontrar la siguiente estructura.
 
 
 # Video
-[![Watch the video](images/video_1.png)](https://youtu.be/UYnvSXlMBvI)
+[![Watch the video](images/video_1.png)](https://youtu.be/FuRSFwK7G9Q)
 
 
 # Contacto
